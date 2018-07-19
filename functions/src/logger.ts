@@ -1,5 +1,5 @@
-export class Logger {
-  static debug(label, message) {
+export default class Logger {
+  static debug(message, label) {
     console.log("[DEBUG]", message, "(via " + label + ")");
   }
 
