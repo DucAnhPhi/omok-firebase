@@ -1,3 +1,5 @@
+import * as admin from "firebase-admin";
+
 interface IProfile {
   username: string;
   points: number;
@@ -7,19 +9,16 @@ interface IProfile {
 }
 
 export class Profile {
-  static create(
-    firestore: any,
-    username: string,
-    id: string
-  ): Promise<void | IProfile> {
+  static firestore = admin.firestore(admin.initializeApp());
+  static create(username: string, id: string): Promise<IProfile> {
     const newProfile = {
       username,
       points: 0,
       win: 0,
-      lost: 0,
+      lose: 0,
       draw: 0
     };
-    return firestore
+    return this.firestore
       .collection("profiles")
       .doc(id)
       .set(newProfile)

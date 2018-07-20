@@ -2,8 +2,8 @@ import * as functions from "firebase-functions";
 import { Profile } from "./profile";
 import Logger from "../logger";
 
-export const createProfileFunc = (firestore: any) =>
-  functions.https.onCall((username, context) => {
+export const createProfileFunc = functions.https.onCall(
+  (data: { username: string }, context) => {
     // Checking that the user is authenticated.
     if (!context.auth) {
       throw new functions.https.HttpsError(
@@ -11,9 +11,11 @@ export const createProfileFunc = (firestore: any) =>
         "The function must be called while authenticated."
       );
     }
-    Profile.create(firestore, username, context.auth.uid)
+
+    // return profile asynchronously after it has been created
+    return Profile.create(data.username, context.auth.uid)
       .then(profile => {
-        Logger.info("createProfile", `Updated profile ${context.auth.uid}`);
+        Logger.info("createProfile", profile);
         return profile;
       })
       .catch(e => {
@@ -23,4 +25,5 @@ export const createProfileFunc = (firestore: any) =>
           "create profile failed"
         );
       });
-  });
+  }
+);
