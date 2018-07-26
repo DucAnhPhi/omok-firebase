@@ -1,4 +1,4 @@
-import * as admin from "firebase-admin";
+import Base from "../base";
 
 interface IProfile {
   username: string;
@@ -8,8 +8,7 @@ interface IProfile {
   draw: number;
 }
 
-export class Profile {
-  static firestore = admin.firestore(admin.initializeApp());
+export class Profile extends Base {
   static create(username: string, id: string): Promise<IProfile> {
     const newProfile = {
       username,
