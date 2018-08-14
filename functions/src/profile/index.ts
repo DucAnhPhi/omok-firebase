@@ -26,3 +26,23 @@ export const createProfileFunc = functions.https.onCall(
       });
   }
 );
+
+export const deleteProfileFunc = functions.https.onCall(
+  (data: any, context) => {
+    if (!context.auth) {
+      throw new functions.https.HttpsError(
+        "failed-precondition",
+        "The function must be called while authenticated."
+      );
+    }
+    return Profile.delete(context.auth.uid)
+      .then(() => console.log("Successful delete user"))
+      .catch(e => {
+        console.log("Delete profile failed: ", e);
+        throw new functions.https.HttpsError(
+          "internal",
+          "create profile failed"
+        );
+      });
+  }
+);

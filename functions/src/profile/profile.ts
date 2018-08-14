@@ -1,4 +1,5 @@
 import * as admin from "firebase-admin";
+
 interface IProfile {
   username: string;
   points: number;
@@ -6,6 +7,7 @@ interface IProfile {
 
 export class Profile {
   static firestore = admin.firestore(admin.initializeApp());
+
   static create(username: string, id: string): Promise<IProfile> {
     const newProfile = {
       username,
@@ -16,5 +18,15 @@ export class Profile {
       .doc(id)
       .set(newProfile)
       .then(() => newProfile);
+  }
+
+  static delete(uid: string) {
+    return Promise.all([
+      this.firestore
+        .collection("profiles")
+        .doc(uid)
+        .delete(),
+      admin.auth().deleteUser(uid)
+    ]);
   }
 }
