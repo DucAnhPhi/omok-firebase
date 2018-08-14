@@ -1,6 +1,5 @@
 import * as functions from "firebase-functions";
 import { Profile } from "./profile";
-import Logger from "../logger";
 
 export const createProfileFunc = functions.https.onCall(
   (data: { username: string }, context) => {
@@ -15,11 +14,11 @@ export const createProfileFunc = functions.https.onCall(
     // return profile asynchronously after it has been created
     return Profile.create(data.username, context.auth.uid)
       .then(profile => {
-        Logger.info("createProfile", profile);
+        console.log("createProfile", profile);
         return profile;
       })
       .catch(e => {
-        Logger.error("create profile failed", e);
+        console.log("create profile failed", e);
         throw new functions.https.HttpsError(
           "internal",
           "create profile failed"
